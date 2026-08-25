@@ -12,8 +12,4 @@ const api = axios.create({
     ...(apiKey && { 'X-API-Key': apiKey }),
   },
 });
-
-// We can add interceptors here later if we need to attach auth tokens
-// or globally handle errors
-
 export default api;

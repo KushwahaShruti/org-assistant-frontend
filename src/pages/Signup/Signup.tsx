@@ -2,7 +2,6 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { Building2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { signupSchema, SignupFormData } from '../../utils/validations';
 import { useAuthStore } from '../../store/authStore';

@@ -8,12 +8,12 @@ interface NavbarProps {
 
 const Navbar = ({ onMenuClick }: NavbarProps) => {
   const { user } = useAuthStore();
-  
+
   return (
     <header className="h-[70px] bg-cards border-b border-border flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
       <div className="flex items-center gap-4">
         {onMenuClick && (
-          <button 
+          <button
             onClick={onMenuClick}
             className="md:hidden p-2 text-text-muted hover:text-text-main hover:bg-black/5 rounded-md"
           >

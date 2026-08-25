@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, Upload, Filter, Loader2, Trash2, Edit2 } from 'lucide-react';
@@ -91,7 +91,7 @@ const Documents = () => {
         </select>
       </div>
 
-      <div className="bg-cards border border-border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-cards border-t-4 border-t-primary border-x border-b border-border rounded-xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] border-collapse">
             <thead>

@@ -1,4 +1,3 @@
-import { text } from 'stream/consumers';
 import api from './axios';
 
 export interface SourceCitation {
@@ -41,7 +40,7 @@ export const chatApi = {
 
   // POST /api/v1/chat/stream
   askStream: async (
-    organizationId: number, 
+    organizationId: number,
     question: string,
     onChunk: (chunk: StreamChunk) => void,
     selectedDocumentIds?: number[] | null
@@ -77,17 +76,17 @@ export const chatApi = {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
+
       buffer += decoder.decode(value, { stream: true });
-      
+
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
-      
+
       for (const line of lines) {
         if (line.trim().startsWith('data:')) {
           const dataStr = line.substring(line.indexOf('data:') + 5).trim();
           if (dataStr === '[DONE]') continue;
-          
+
           try {
             const parsed = JSON.parse(dataStr);
             if (parsed.error) {
@@ -97,14 +96,14 @@ export const chatApi = {
             }
 
             const textVal = parsed.text ?? parsed.answer ?? parsed.content ?? parsed.message ?? parsed.delta;
-            
+
             if (textVal !== undefined) {
               onChunk({ text: textVal });
             } else if (!parsed.sources && typeof parsed === 'object') {
               // DEBUG: If it's an object we don't recognize, dump it to the screen so we can see the keys!
               onChunk({ text: JSON.stringify(parsed) });
             }
-            
+
             if (parsed.sources) {
               const sources = parsed.sources.map((s: any) => ({
                 document: s.file_name || s.document,

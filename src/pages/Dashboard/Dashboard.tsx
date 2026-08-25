@@ -34,13 +34,9 @@ const Dashboard = () => {
         {/* Light overlay orbs for premium feel */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
-        
-        <div className="relative z-10 w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-md border border-white/30 shrink-0 shadow-inner">
-          👋
-        </div>
-        <div className="relative z-10 flex-1">
-          <h1 className="text-3xl font-bold mb-2 text-white drop-shadow-sm">Welcome back, {user?.name || 'User'}!</h1>
-          <p className="text-lg text-emerald-50 m-0 font-medium drop-shadow-sm">Here is an overview of your knowledge base.</p>
+        <div className="relative z-10 flex-1 text-center ">
+          <h1 className="text-4xl font-bold mb-2 text-white drop-shadow-sm">Welcome back, {user?.name || 'User'}!</h1>
+          <p className="text-xl text-emerald-50 m-0 font-medium drop-shadow-sm">Here is an overview of your knowledge base.</p>
         </div>
       </div>
 
@@ -54,7 +50,7 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8">
-            <div className="bg-white/90 backdrop-blur-xl border border-slate-100 rounded-3xl p-8 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group">
+            <div className="bg-white/90 backdrop-blur-xl border-t-4 border-t-emerald-600 border-x border-b border-slate-100 rounded-3xl p-8 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group overflow-hidden">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50 text-emerald-600 shadow-inner border border-emerald-100 transition-transform duration-500 group-hover:scale-110">
                   <Building2 size={32} strokeWidth={1.5} />
@@ -69,7 +65,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-xl border border-slate-100 rounded-3xl p-8 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group">
+            <div className="bg-white/90 backdrop-blur-xl border-t-4 border-t-emerald-600 border-x border-b border-slate-100 rounded-3xl p-8 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group overflow-hidden">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br from-emerald-50 to-emerald-100/50 text-emerald-600 shadow-inner border border-emerald-100 transition-transform duration-500 group-hover:scale-110">
                   <FileText size={32} strokeWidth={1.5} />
@@ -93,31 +89,31 @@ const Dashboard = () => {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
           {user?.role === 'superadmin' && (
             <>
-              <Link to="/organizations/new" className="flex items-center gap-5 p-6 bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group">
+              <Link to="/organizations/new" className="flex items-center gap-5 p-6 bg-white border-t-4 border-t-emerald-600 border-x border-b border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group overflow-hidden">
                 <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
                   <Plus size={24} strokeWidth={2} />
-                </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                </div>
                 <div className="flex-1">
                   <div className="font-bold text-slate-900 text-base mb-0.5">Create Organization</div>
                   <div className="text-sm text-slate-500">Add a new organization</div>
                 </div>
                 <ChevronRight size={20} className="text-slate-300 group-hover:text-emerald-600 transition-colors group-hover:translate-x-1 duration-300" />
               </Link>
-              
-              <Link to="/documents/upload" className="flex items-center gap-5 p-6 bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group">
+
+              <Link to="/documents/upload" className="flex items-center gap-5 p-6 bg-white border-t-4 border-t-emerald-600 border-x border-b border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group overflow-hidden">
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                   <Upload size={24} strokeWidth={2} />
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-slate-900 text-base mb-0.5">Upload Document</div>
-                  <div clLassName="text-sm text-slate-500">Upload new documents</div>
+                  <div className="text-sm text-slate-500">Upload new documents</div>
                 </div>
                 <ChevronRight size={20} className="text-slate-300 group-hover:text-blue-600 transition-colors group-hover:translate-x-1 duration-300" />
-              </Link>                                     
-            </>               
+              </Link>
+            </>
           )}
-          
-          <Link to="/chat" className="flex items-center gap-5 p-6 bg-white border border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group">
+
+          <Link to="/chat" className="flex items-center gap-5 p-6 bg-white border-t-4 border-t-emerald-600 border-x border-b border-slate-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] group overflow-hidden">
             <div className="w-14 h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shadow-inner group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
               <MessageSquare size={24} strokeWidth={2} />
             </div>

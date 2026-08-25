@@ -1,13 +1,21 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Building2, Plus, Edit2, Trash2 } from 'lucide-react';
 import { organizationService } from '../../services/organization.service';
 import { useAuthStore } from '../../store/authStore';
 import { getVisibleOrganizations } from '../../utils/rbac';
+import Modal from '../../components/common/Modal/Modal';
+import Button from '../../components/common/Button/Button';
+import Input from '../../components/common/Input/Input';
 
 const Organizations = () => {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
+  
+  const [editingOrg, setEditingOrg] = useState<{id: number, name: string} | null>(null);
+  const [editName, setEditName] = useState('');
+  const [deletingOrgId, setDeletingOrgId] = useState<number | null>(null);
 
   const { data: organizations, isLoading } = useQuery({
     queryKey: ['organizations'],
@@ -31,19 +39,29 @@ const Organizations = () => {
     },
   });
 
-  const handleDelete = (e: React.MouseEvent, id: number) => {
+  const handleDeleteClick = (e: React.MouseEvent, id: number) => {
     e.preventDefault(); // Prevent navigating to the organization
-    if (window.confirm('Are you sure you want to delete this organization? All documents inside will be lost!')) {
-      deleteMutation.mutate(id);
+    setDeletingOrgId(id);
+  };
+
+  const confirmDelete = () => {
+    if (deletingOrgId) {
+      deleteMutation.mutate(deletingOrgId);
+      setDeletingOrgId(null);
     }
   };
 
-  const handleUpdate = (e: React.MouseEvent, id: number, currentName: string) => {
+  const handleUpdateClick = (e: React.MouseEvent, id: number, currentName: string) => {
     e.preventDefault(); // Prevent navigating to the organization
-    const newName = window.prompt('Enter new organization name:', currentName);
-    if (newName && newName.trim() !== '' && newName !== currentName) {
-      updateMutation.mutate({ id, name: newName.trim() });
+    setEditingOrg({ id, name: currentName });
+    setEditName(currentName);
+  };
+
+  const submitUpdate = () => {
+    if (editingOrg && editName && editName.trim() !== '' && editName !== editingOrg.name) {
+      updateMutation.mutate({ id: editingOrg.id, name: editName.trim() });
     }
+    setEditingOrg(null);
   };
 
   return (
@@ -68,7 +86,7 @@ const Organizations = () => {
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
           {visibleOrganizations && visibleOrganizations.length > 0 ? (
             visibleOrganizations.map((org) => (
-              <div key={org.id} className="bg-cards border border-border rounded-lg p-6 flex flex-col gap-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+              <div key={org.id} className="bg-cards border-t-4 border-t-primary border-x border-b border-border rounded-lg p-6 flex flex-col gap-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md overflow-hidden">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-md flex items-center justify-center shrink-0 bg-primary/10 text-primary">
                     <Building2 size={24} />
@@ -82,7 +100,7 @@ const Organizations = () => {
                   <div className="flex items-center justify-end mt-auto pt-4 border-t border-border">
                     <div className="flex items-center gap-3">
                       <button
-                        onClick={(e) => handleUpdate(e, org.id, org.name)}
+                        onClick={(e) => handleUpdateClick(e, org.id, org.name)}
                         disabled={updateMutation.isPending}
                         className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-all shadow-sm disabled:opacity-50"
                         title="Rename organization"
@@ -91,7 +109,7 @@ const Organizations = () => {
                         Edit
                       </button>
                       <button
-                        onClick={(e) => handleDelete(e, org.id)}
+                        onClick={(e) => handleDeleteClick(e, org.id)}
                         disabled={deleteMutation.isPending}
                         className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm disabled:opacity-50"
                         title="Delete organization"
@@ -111,6 +129,68 @@ const Organizations = () => {
           )}
         </div>
       )}
+
+      {/* Edit Organization Modal */}
+      <Modal
+        isOpen={!!editingOrg}
+        onClose={() => setEditingOrg(null)}
+        title="Edit Organization"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setEditingOrg(null)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="primary" 
+              onClick={submitUpdate}
+              disabled={!editName || editName.trim() === '' || editName === editingOrg?.name || updateMutation.isPending}
+              isLoading={updateMutation.isPending}
+            >
+              Save Changes
+            </Button>
+          </>
+        }
+      >
+        <div className="py-2">
+          <Input
+            label="Organization Name"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="Enter organization name"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                submitUpdate();
+              }
+            }}
+          />
+        </div>
+      </Modal>
+
+      {/* Delete Organization Modal */}
+      <Modal
+        isOpen={!!deletingOrgId}
+        onClose={() => setDeletingOrgId(null)}
+        title="Delete Organization"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setDeletingOrgId(null)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="danger" 
+              onClick={confirmDelete}
+              isLoading={deleteMutation.isPending}
+            >
+              Delete
+            </Button>
+          </>
+        }
+      >
+        <div className="py-2 text-text-main">
+          Are you sure you want to delete this organization? All documents inside will be lost! This action cannot be undone.
+        </div>
+      </Modal>
     </div>
   );
 };

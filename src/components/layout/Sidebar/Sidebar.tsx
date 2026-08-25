@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Building2, FileText, MessageSquare, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, Building2, FileText, MessageSquare, LogOut, X, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../../store/authStore';
 
 interface SidebarProps {
@@ -24,45 +24,52 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   return (
-    <aside className={`w-[260px] h-screen bg-cards border-r border-border flex flex-col fixed top-0 left-0 z-40 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
-      <div className="h-[70px] flex items-center justify-between px-6 border-b border-border">
+    <aside className={`w-[260px] h-screen bg-white/80 backdrop-blur-xl border-r border-slate-200/60 flex flex-col fixed top-0 left-0 z-40 transition-all duration-300 ease-in-out ${isOpen ? 'translate-x-0 shadow-2xl shadow-slate-200/50' : '-translate-x-full'} md:translate-x-0`}>
+      <div className="h-[76px] flex items-center justify-between px-6 border-b border-slate-200/60 bg-white/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary text-white rounded-md flex items-center justify-center font-bold text-sm">OA</div>
-          <span className="font-semibold text-[1.1rem] text-text-main">Org Assistant</span>
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-emerald-400 text-white rounded-xl flex items-center justify-center font-bold shadow-lg shadow-primary/20 ring-1 ring-white/50">
+            <Sparkles size={20} className="text-white" />
+          </div>
+          <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600 tracking-tight">Org Assistant</span>
         </div>
         {onClose && (
-          <button onClick={onClose} className="md:hidden text-text-muted hover:text-text-main p-1">
+          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-lg transition-colors">
             <X size={20} />
           </button>
         )}
       </div>
 
-      <nav className="px-4 py-6 flex-grow">
-        <ul className="list-none flex flex-col gap-2 m-0 p-0">
+      <nav className="px-4 py-8 flex-grow overflow-y-auto">
+        <ul className="list-none flex flex-col gap-3 m-0 p-0">
           {navItems.map((item) => (
             <li key={item.path}>
               <NavLink
                 to={item.path}
                 onClick={() => onClose && onClose()}
-                className={({ isActive }) => 
-                  `flex items-center gap-3 px-4 py-3 font-medium transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-emerald-50 to-emerald-50/30 text-emerald-700 rounded-xl font-semibold shadow-sm border border-emerald-100/50' 
-                      : 'text-text-muted hover:bg-background hover:text-text-main rounded-xl border border-transparent'
+                className={({ isActive }) =>
+                  `flex items-center gap-3.5 px-4 py-3.5 font-medium transition-all duration-300 group ${isActive
+                    ? 'bg-primary text-white rounded-2xl shadow-md shadow-primary/25'
+                    : 'text-slate-500 hover:bg-slate-100/80 hover:text-slate-900 rounded-2xl'
                   }`
                 }
               >
-                {item.icon}
-                <span>{item.label}</span>
+                {({ isActive }) => (
+                  <>
+                    <div className={`transition-transform duration-300 ${!isActive ? 'group-hover:scale-110 group-hover:text-primary' : ''}`}>
+                      {item.icon}
+                    </div>
+                    <span className="text-[15px]">{item.label}</span>
+                  </>
+                )}
               </NavLink>
             </li>
           ))}
         </ul>
       </nav>
 
-      <div className="px-4 py-6 border-t border-border">
-        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-md text-error font-medium w-full border-none bg-transparent cursor-pointer transition-all hover:bg-error/10">
-          <LogOut size={20} />
+      <div className="p-4 border-t border-slate-200/60 bg-slate-50/50">
+        <button onClick={handleLogout} className="flex items-center justify-center gap-3 px-4 py-3.5 rounded-2xl text-slate-600 font-medium w-full border border-slate-200 bg-white shadow-sm cursor-pointer transition-all hover:bg-error hover:text-white hover:border-error hover:shadow-md hover:shadow-error/20 group">
+          <LogOut size={18} className="transition-transform group-hover:-translate-x-1" />
           <span>Logout</span>
         </button>
       </div>
