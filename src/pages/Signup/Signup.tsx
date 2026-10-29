@@ -2,10 +2,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { signupSchema, SignupFormData } from '../../utils/validations';
 import { useAuthStore } from '../../store/authStore';
-import { organizationService } from '../../services/organization.service';
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -19,16 +17,9 @@ const Signup: React.FC = () => {
     resolver: zodResolver(signupSchema),
   });
 
-  const [orgId, setOrgId] = React.useState<number | ''>('');
-
-  const { data: organizations } = useQuery({
-    queryKey: ['organizations'],
-    queryFn: organizationService.getOrganizations,
-  });
-
   const onSubmit = async (data: SignupFormData) => {
     try {
-      await registerUser(data.name, data.email, data.password, orgId === '' ? undefined : orgId);
+      await registerUser(data.name, data.email, data.password);
       navigate('/');
     } catch (error) {
       console.error('Registration failed:', error);
@@ -94,20 +85,6 @@ const Signup: React.FC = () => {
               {...register('confirmPassword')}
             />
             {errors.confirmPassword && <span className="text-error text-xs">{errors.confirmPassword.message}</span>}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-main">Organization</label>
-            <select
-              value={orgId}
-              onChange={(e) => setOrgId(e.target.value === '' ? '' : Number(e.target.value))}
-              className={`${defaultInputClass} bg-background`}
-            >
-              <option value="">-- Let system assign --</option>
-              {organizations?.map(org => (
-                <option key={org.id} value={org.id}>{org.name}</option>
-              ))}
-            </select>
           </div>
 
           <button type="submit" className="mt-2 w-full p-3 bg-primary text-white border-none rounded-md font-semibold text-base cursor-pointer transition-colors hover:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isLoading}>

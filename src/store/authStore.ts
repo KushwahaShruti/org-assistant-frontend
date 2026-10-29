@@ -6,7 +6,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: false,
 
-  login: async (email: string, _password: string, orgId?: number) => {
+  login: async (email: string, _password: string, orgId?: number, role: User['role'] = 'user') => {
     set({ isLoading: true });
     
     // Simulate API call delay
@@ -17,7 +17,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       id: 'usr_123',
       email: email,
       name: email.split('@')[0] || 'User',
-      role: email.toLowerCase().includes('superadmin') ? 'superadmin' : 'user',
+      role,
       assignedOrganizationId: orgId,
     };
 

@@ -1,11 +1,5 @@
 import { User } from '../types/auth';
 
-/**
- * Mocks tenant isolation by filtering organizations based on the logged-in user.
- * - Superadmins see all organizations.
- * - Normal users see organizations whose name matches their email domain or username.
- * - As a fallback, assigns a consistent single organization based on their email.
- */
 export const getVisibleOrganizations = (organizations: any[] | undefined, user: User | null) => {
   if (!organizations || organizations.length === 0) return [];
   if (!user) return [];

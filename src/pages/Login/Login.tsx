@@ -1,34 +1,27 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Building2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { ShieldCheck, UserRound } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import { organizationService } from '../../services/organization.service';
+import type { User } from '../../types/auth';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login, isLoading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [orgId, setOrgId] = useState<number | ''>('');
   const [error, setError] = useState('');
 
-  const { data: organizations } = useQuery({
-    queryKey: ['organizations'],
-    queryFn: organizationService.getOrganizations,
-  });
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (role: User['role']) => {
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
     try {
-      await login(email, password, orgId === '' ? undefined : orgId);
+      setError('');
+      await login(email, password, undefined, role);
       navigate('/');
-    } catch (err) {
+    } catch {
       setError('Failed to login. Please try again.');
     }
   };
@@ -44,7 +37,7 @@ const Login: React.FC = () => {
       </div>
 
       <div className="bg-cards rounded-lg shadow-md border border-border p-8">
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-text-main">Email</label>
             <input
@@ -67,29 +60,35 @@ const Login: React.FC = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-main">Organization</label>
-            <select
-              value={orgId}
-              onChange={(e) => setOrgId(e.target.value === '' ? '' : Number(e.target.value))}
-              className="p-3 border border-border rounded-md font-inherit text-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 bg-background"
-            >
-              <option value="">Let system assign</option>
-              {organizations?.map(org => (
-                <option key={org.id} value={org.id}>{org.name}</option>
-              ))}
-            </select>
-          </div>
-
           {error && <span className="text-error text-xs">{error}</span>}
 
           <div className="flex justify-end mt-1">
             <Link to="/forgot-password" className="text-sm text-primary font-medium hover:underline">Forgot password?</Link>
           </div>
 
-          <button type="submit" className="mt-2 w-full p-3 bg-primary text-white border-none rounded-md font-semibold text-base cursor-pointer transition-colors hover:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isLoading}>
-            {isLoading ? 'Signing In...' : 'Sign In'}
-          </button>
+          <div className="mt-2">
+            <p className="text-sm font-medium text-text-main mb-2">Sign in as</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleLogin('user')}
+                className="flex items-center justify-center gap-2 p-3 bg-primary text-white border-none rounded-md font-semibold text-sm cursor-pointer transition-colors hover:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={isLoading}
+              >
+                <UserRound size={17} />
+                {isLoading ? 'Signing In...' : 'User Sign In'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleLogin('superadmin')}
+                className="flex items-center justify-center gap-2 p-3 bg-slate-800 text-white border-none rounded-md font-semibold text-sm cursor-pointer transition-colors hover:bg-slate-900 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={isLoading}
+              >
+                <ShieldCheck size={17} />
+                {isLoading ? 'Signing In...' : 'Admin Sign In'}
+              </button>
+            </div>
+          </div>
 
           <div className="text-center mt-4 text-sm text-text-muted">
             Don't have an account? <Link to="/signup" className="text-primary font-medium hover:underline">Sign up</Link>
